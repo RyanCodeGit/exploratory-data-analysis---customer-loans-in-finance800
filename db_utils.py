@@ -24,8 +24,12 @@ class RDSDatabaseConnector:
         self.df = pd.read_sql_table(f'{table_name}', self.engine)
         return self.df
 
-    def export_to_csv(self, filename):
-        self.df.to_csv(f'{filename}.csv')
+    def export_to_csv(self, path):
+        self.df.to_csv(f'{path}.csv')
+
+    def read_csv(self, path):
+        df = pd.read_csv(f'{path}', index_col=0)
+        return df
 
 # Testing methods below, will remove later
 
@@ -33,3 +37,11 @@ class RDSDatabaseConnector:
 # test.start_sqlalchemy_engine()
 # test.get_data('loan_payments')
 # test.export_to_csv("loan payments")
+# df = test.read_csv("loan payments.csv")
+# df.head(10)
+
+""" 
+TO DO
+1. Add if/else statement to export_to_csv and read_csv methods covering user error
+such as not including file extension
+"""
