@@ -4,13 +4,13 @@ import yaml
 from sqlalchemy import create_engine
 
 # Creating a function to load credentials from a YAML file
-def loader(filename):
+def load_yaml(filename):
     file = open(filename, 'r') # specify file to be loaded
     opened_file = yaml.safe_load(file) # loading the file previously specified
     file.close() # closing file
     return opened_file
 
-credentials = loader('credentials.yaml')
+credentials = load_yaml('credentials.yaml')
 
 # Creating a class to extract data from RDS database
 class RDSDatabaseConnector:
@@ -44,4 +44,6 @@ class RDSDatabaseConnector:
 TO DO
 1. Add if/else statement to export_to_csv and read_csv methods covering user error
 such as not including file extension
+
+2. Add docstrings for class methods
 """
