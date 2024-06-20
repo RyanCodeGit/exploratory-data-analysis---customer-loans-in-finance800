@@ -1,7 +1,8 @@
+from sqlalchemy import create_engine
 import pandas as pd
 import psycopg2
 import yaml
-from sqlalchemy import create_engine
+
 
 # Creating a function to load credentials from a YAML file
 def load_yaml(filename):
