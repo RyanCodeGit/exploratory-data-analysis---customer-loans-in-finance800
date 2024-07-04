@@ -11,8 +11,6 @@ def load_yaml(filename):
     file.close() # closing file
     return opened_file
 
-credentials = load_yaml('credentials.yaml')
-
 # Creating a class to extract data from RDS database
 class RDSDatabaseConnector:
     """
@@ -99,10 +97,11 @@ class RDSDatabaseConnector:
 
 # Testing methods below, will remove later
 
+# credentials = load_yaml('credentials.yaml')
 # test = RDSDatabaseConnector(credentials)
 # test.start_sqlalchemy_engine()
-# test.get_data('loan_payments')
-# test.export_to_csv("loan payments")
-# df = test.read_csv("loan payments.csv")
+# df = test.get_data('loan_payments')
+# # test.export_to_csv("loan payments")
+# # df = test.read_csv("loan payments.csv")
 # df.head(10)
 
