@@ -95,6 +95,26 @@ class RDSDatabaseConnector:
             self.df = pd.read_csv(f'{path}.csv', index_col=0)
             return self.df
 
+
+class DataTransform:
+    def __init__(self, df, columns):
+        self.df = df
+        self.columns = columns
+    
+    def to_category(self):
+        for column in self.columns:
+            self.df[column] = self.df[column].astype('category')
+        return self.df
+
+    def to_period(self):
+        for column in self.columns:
+            self.df[column] = pd.to_datetime(self.df[column], format='mixed')
+            self.df[column] = self.df[column].dt.to_period('M')
+        return self.df
+
+
+
+
 # Testing methods below, will remove later
 
 # credentials = load_yaml('credentials.yaml')
