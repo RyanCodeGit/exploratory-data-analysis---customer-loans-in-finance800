@@ -102,17 +102,29 @@ class DataTransform:
         self.columns = columns
     
     def to_category(self):
-        for column in self.columns:
-            self.df[column] = self.df[column].astype('category')
+        if type(self.columns) == list:
+            for column in self.columns:
+                self.df[column] = self.df[column].astype('category')
+        else:
+            self.df[self.columns] = self.df[self.columns].astype('category')
         return self.df
 
-    def to_period(self):
-        for column in self.columns:
-            self.df[column] = pd.to_datetime(self.df[column], format='mixed')
-            self.df[column] = self.df[column].dt.to_period('M')
+    def to_datetime(self):
+        if type(self.columns) == list:
+            for column in self.columns:
+                self.df[column] = pd.to_datetime(self.df[column], format='mixed')
+        else:
+            self.df[self.columns] = pd.to_datetime(self.df[self.columns], format='mixed')
         return self.df
 
-
+    def to_int(self):
+        if type(self.columns) == list:
+            for column in self.columns:
+                self.df[column] = pd.to_numeric(self.df[column], downcast='signed')
+        else:
+            self.df[self.columns] = pd.to_numeric(self.df[self.columns], downcast='signed')
+        return self.df
+        
 
 
 # Testing methods below, will remove later

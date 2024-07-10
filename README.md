@@ -15,6 +15,7 @@ By conducting this analysis I hope to be able to gain a deeper understanding of 
 
 ### What I've Learned
 
+
 ## Installation Instructions
 The following python packages are necessary to use this repository:
 1. pandas
@@ -35,3 +36,4 @@ The home directory of this repository contains most of what is needed, with my p
 This repository is covered under the MIT License. For more information see the "LICENSE.txt" file.
 
 ## To Do List:
+1. add docstrings to DataTransform in db_utils.py
