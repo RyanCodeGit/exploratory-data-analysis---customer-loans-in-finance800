@@ -125,6 +125,31 @@ class DataTransform:
             self.df[self.columns] = pd.to_numeric(self.df[self.columns], downcast='signed')
         return self.df
         
+class DataFrameInfo:
+    def __init__(self, df):
+        self.df = df
+
+    def check_dtypes(self):
+        self.df.dtypes
+
+    def check_stats(self, column):
+        print(f"Median of {column}: {self.df[column].median()}")
+        print(f"Mean of {column}: {self.df[column].mean()}")
+        print(f"Standard Deviation of {column}: {self.df[column].std()}")
+        print(f"Largest value in {column}: {self.df[column].max()}")
+        print(f"Smallest value in {column}: {self.df[column].min()}")
+
+    def count_category(self, column):
+        print(f"Number of distinct values in {column}: {self.df[column].count()}")
+        print(f"Frequency of each unique value in {self.df[column].value_counts(dropna=False)}")
+
+    def count_nulls(self, column):
+        print(f"Percentage of non-null data in {column}: {(self.df[column].count() / self.df.shape[0]) * 100}")
+        print(f"Percentage of null data in {column}: {self.df[column].isna().mean() * 100}")
+    
+    def print_shape(self):
+        print(f"Number of rows in dataframe: {self.df.shape[0]}")
+        print(f"Number of columns in dataframe: {self.df.shape[1]}")
 
 
 # Testing methods below, will remove later
