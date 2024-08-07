@@ -36,4 +36,5 @@ The home directory of this repository contains most of what is needed, with my p
 This repository is covered under the MIT License. For more information see the "LICENSE.txt" file.
 
 ## To Do List:
-1. add docstrings to DataTransform in db_utils.py
+1. add docstrings for all classes in db_utils.py
+2. investigate columns with null data to determine which columns to drop

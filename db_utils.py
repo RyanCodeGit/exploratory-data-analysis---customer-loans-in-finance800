@@ -1,4 +1,5 @@
 from sqlalchemy import create_engine
+import missingno as msno
 import pandas as pd
 import psycopg2
 import yaml
@@ -129,9 +130,6 @@ class DataFrameInfo:
     def __init__(self, df):
         self.df = df
 
-    def check_dtypes(self):
-        self.df.dtypes
-
     def check_stats(self, column):
         print(f"Median of {column}: {self.df[column].median()}")
         print(f"Mean of {column}: {self.df[column].mean()}")
@@ -144,21 +142,46 @@ class DataFrameInfo:
         print(f"Frequency of each unique value in {self.df[column].value_counts(dropna=False)}")
 
     def count_nulls(self, column):
-        print(f"Percentage of non-null data in {column}: {(self.df[column].count() / self.df.shape[0]) * 100}")
-        print(f"Percentage of null data in {column}: {self.df[column].isna().mean() * 100}")
+        print(f"Percentage of non-null data in {column}: {round((self.df[column].count() / self.df.shape[0]) * 100, 3)}")
+        print(f"Percentage of null data in {column}: {round(self.df[column].isna().mean() * 100, 3)}")
     
+    def print_nulls(self):
+        print(f"Percentage of nulls for each column in dataframe")
+        print(self.df.isnull().sum()/len(self.df)*100)
+
     def print_shape(self):
+        print(f"Shape of the data in dataframe")
         print(f"Number of rows in dataframe: {self.df.shape[0]}")
         print(f"Number of columns in dataframe: {self.df.shape[1]}")
 
+class Plotter:
+    def __init__(self, df):
+        self.df = df
 
-# Testing methods below, will remove later
+    def plot_nulls(self, filter=''):
+        msno.matrix(filter)
 
-# credentials = load_yaml('credentials.yaml')
-# test = RDSDatabaseConnector(credentials)
-# test.start_sqlalchemy_engine()
-# df = test.get_data('loan_payments')
-# # test.export_to_csv("loan payments")
-# # df = test.read_csv("loan payments.csv")
-# df.head(10)
+class DataFrameTransform:
+    def __init__(self, df):
+        self.df = df
 
+    # def impute_median(self, column):
+
+
+    # def impute_mean(self, column):
+
+""" 
+Step 1: You will want to create two classes at this stage:
+
+A Plotter class to visualise insights from the data
+A DataFrameTransformclass to perform EDA transformations on your data
+
+Step 2: Use a method/function to determine the amount of NULLs in each column. Determine which columns should be dropped and drop them.
+
+Step 3: Within your DataFrameTransform class create a method which can impute your DataFrame columns. Decide whether the column should be imputed with the median or the mean and impute the NULL values.
+
+Step 4: Run your NULL checking method/function again to check that all NULLs have been removed. Generate a plot by creating a method in your Plotter class to visualise the removal of NULL values.
+
+Step 5: At this point you may want to save a separate copy of your DataFrame that you can use during your analysis in Milestone 4.
+
+"""
