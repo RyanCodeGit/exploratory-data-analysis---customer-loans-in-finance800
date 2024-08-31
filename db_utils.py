@@ -159,16 +159,31 @@ class Plotter:
         self.df = df
 
     def plot_nulls(self, filter=''):
-        msno.matrix(filter)
+        if isinstance(filter, pd.core.frame.DataFrame):
+            msno.matrix(filter)
+        else:
+            msno.matrix(self.df)
+
 
 class DataFrameTransform:
     def __init__(self, df):
         self.df = df
 
-    # def impute_median(self, column):
+    def impute_median(self, column):
+        self.df[column] = self.df[column].fillna(self.df[column].median())
 
+    def impute_mean(self, column):
+        self.df[column] = self.df[column].fillna(self.df[column].mean())
 
-    # def impute_mean(self, column):
+    def impute_mode(self, column):
+        self.df[column] = self.df[column].fillna(self.df[column].mode())
+
+    def impute_from_col(self, column1, column2):
+        """
+        This method takes parameters column1 and column2, using values from 
+        column2 to fill NULL values in column1.
+        """
+        self.df[column1] = self.df[column1].fillna(self.df[column2])
 
 """ 
 Step 1: You will want to create two classes at this stage:
