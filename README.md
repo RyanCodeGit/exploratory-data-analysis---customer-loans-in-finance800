@@ -37,4 +37,5 @@ This repository is covered under the MIT License. For more information see the "
 
 ## To Do List:
 1. add docstrings for all classes in db_utils.py
-2. investigate columns with null data to determine which columns to drop
+2. what i've learned: not all methods need constructors, in the transform classes it's simpler and easier to read without constructors; and in the info class using a constructor means any changes to the df won't be tracked, meaning you need to refresh the variable every time you want to use it after a change is made
+3. add plotly.express correlation heatmap to Plotter class maybe

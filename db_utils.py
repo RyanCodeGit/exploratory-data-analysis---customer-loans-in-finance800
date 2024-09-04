@@ -97,93 +97,74 @@ class RDSDatabaseConnector:
             return self.df
 
 
-class DataTransform:
-    def __init__(self, df, columns):
-        self.df = df
-        self.columns = columns
-    
-    def to_category(self):
-        if type(self.columns) == list:
-            for column in self.columns:
-                self.df[column] = self.df[column].astype('category')
+class DataTransform: 
+    def to_category(self, df, columns):
+        if type(columns) == list:
+            for column in columns:
+                df[column] = df[column].astype('category')
         else:
-            self.df[self.columns] = self.df[self.columns].astype('category')
-        return self.df
+            df[columns] = df[columns].astype('category')
 
-    def to_datetime(self):
-        if type(self.columns) == list:
-            for column in self.columns:
-                self.df[column] = pd.to_datetime(self.df[column], format='mixed')
+    def to_datetime(self, df, columns):
+        if type(columns) == list:
+            for column in columns:
+                df[column] = pd.to_datetime(df[column], format='mixed')
         else:
-            self.df[self.columns] = pd.to_datetime(self.df[self.columns], format='mixed')
-        return self.df
+            df[columns] = pd.to_datetime(df[columns], format='mixed')
 
-    def to_int(self):
-        if type(self.columns) == list:
-            for column in self.columns:
-                self.df[column] = pd.to_numeric(self.df[column], downcast='signed')
+    def to_int(self, df, columns):
+        if type(columns) == list:
+            for column in columns:
+                df[column] = pd.to_numeric(df[column], downcast='signed')
         else:
-            self.df[self.columns] = pd.to_numeric(self.df[self.columns], downcast='signed')
-        return self.df
+            df[columns] = pd.to_numeric(df[columns], downcast='signed')
         
 class DataFrameInfo:
-    def __init__(self, df):
-        self.df = df
+    def check_stats(self, df, column):
+        print(f"Median of {column}: {df[column].median()}")
+        print(f"Mean of {column}: {df[column].mean()}")
+        print(f"Standard Deviation of {column}: {df[column].std()}")
+        print(f"Largest value in {column}: {df[column].max()}")
+        print(f"Smallest value in {column}: {df[column].min()}")
 
-    def check_stats(self, column):
-        print(f"Median of {column}: {self.df[column].median()}")
-        print(f"Mean of {column}: {self.df[column].mean()}")
-        print(f"Standard Deviation of {column}: {self.df[column].std()}")
-        print(f"Largest value in {column}: {self.df[column].max()}")
-        print(f"Smallest value in {column}: {self.df[column].min()}")
+    def value_count(self, df, column):
+        print(f"Number of distinct values in {column}: {df[column].count()}")
+        print(f"Frequency of each unique value in {df[column].value_counts(dropna=False)}")
 
-    def count_category(self, column):
-        print(f"Number of distinct values in {column}: {self.df[column].count()}")
-        print(f"Frequency of each unique value in {self.df[column].value_counts(dropna=False)}")
-
-    def count_nulls(self, column):
-        print(f"Percentage of non-null data in {column}: {round((self.df[column].count() / self.df.shape[0]) * 100, 3)}")
-        print(f"Percentage of null data in {column}: {round(self.df[column].isna().mean() * 100, 3)}")
+    def count_nulls(self, df, column):
+        print(f"Percentage of non-null data in {column}: {round((df[column].count() / df.shape[0]) * 100, 3)}")
+        print(f"Percentage of null data in {column}: {round(df[column].isna().mean() * 100, 3)}")
     
-    def print_nulls(self):
+    def print_nulls(self, df):
         print(f"Percentage of nulls for each column in dataframe")
-        print(self.df.isnull().sum()/len(self.df)*100)
+        print(df.isnull().sum()/len(df)*100)
 
-    def print_shape(self):
+    def print_shape(self, df):
         print(f"Shape of the data in dataframe")
-        print(f"Number of rows in dataframe: {self.df.shape[0]}")
-        print(f"Number of columns in dataframe: {self.df.shape[1]}")
+        print(f"Number of rows in dataframe: {df.shape[0]}")
+        print(f"Number of columns in dataframe: {df.shape[1]}")
 
 class Plotter:
-    def __init__(self, df):
-        self.df = df
-
-    def plot_nulls(self, filter=''):
-        if isinstance(filter, pd.core.frame.DataFrame):
-            msno.matrix(filter)
-        else:
-            msno.matrix(self.df)
+    def plot_nulls(self, df):
+        msno.matrix(df)
 
 
 class DataFrameTransform:
-    def __init__(self, df):
-        self.df = df
+    def impute_median(self, df, column):
+        df[column] = df[column].fillna(df[column].median())
 
-    def impute_median(self, column):
-        self.df[column] = self.df[column].fillna(self.df[column].median())
+    def impute_mean(self, df, column):
+        df[column] = df[column].fillna(df[column].mean())
 
-    def impute_mean(self, column):
-        self.df[column] = self.df[column].fillna(self.df[column].mean())
+    def impute_mode(self, df, column):
+        df[column] = df[column].fillna(df[column].mode().iloc[0])
 
-    def impute_mode(self, column):
-        self.df[column] = self.df[column].fillna(self.df[column].mode())
-
-    def impute_from_col(self, column1, column2):
+    def impute_from_col(self, df, column1, column2):
         """
         This method takes parameters column1 and column2, using values from 
         column2 to fill NULL values in column1.
         """
-        self.df[column1] = self.df[column1].fillna(self.df[column2])
+        df[column1] = df[column1].fillna(df[column2])
 
 """ 
 Step 1: You will want to create two classes at this stage:
