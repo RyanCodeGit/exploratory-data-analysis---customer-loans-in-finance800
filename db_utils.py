@@ -1,6 +1,9 @@
+from statsmodels.graphics.gofplots import qqplot
 from sqlalchemy import create_engine
+import matplotlib.pyplot as plt
 import missingno as msno
 import pandas as pd
+import plotly.express as px
 import psycopg2
 import yaml
 
@@ -121,11 +124,14 @@ class DataTransform:
         
 class DataFrameInfo:
     def check_stats(self, df, column):
+        print(f"Q1 of {column}: {df[column].quantile(0.25)}")
         print(f"Median of {column}: {df[column].median()}")
+        print(f"Q3 of {column}: {df[column].quantile(0.75)}")
         print(f"Mean of {column}: {df[column].mean()}")
+        print(f"Mode of {column}: {df[column].mode().iloc[0]}")
         print(f"Standard Deviation of {column}: {df[column].std()}")
-        print(f"Largest value in {column}: {df[column].max()}")
         print(f"Smallest value in {column}: {df[column].min()}")
+        print(f"Largest value in {column}: {df[column].max()}")
 
     def value_count(self, df, column):
         print(f"Number of distinct values in {column}: {df[column].count()}")
@@ -145,8 +151,19 @@ class DataFrameInfo:
         print(f"Number of columns in dataframe: {df.shape[1]}")
 
 class Plotter:
-    def plot_nulls(self, df):
+    def null_matrix(self, df):
         msno.matrix(df)
+
+    def multi_hist(self, df, columns=None, num_bins=50, size_inches=(15,20)):
+        df.hist(column=columns, bins=num_bins, figsize=size_inches)
+    
+    def plot_hist(self, df, column, bins=None):
+        hist = px.histogram(df, x=column, nbins=bins)
+        hist.show()
+
+    def plot_qq(self, df, column):
+        plot = qqplot(df[column], line='q', fit=True)
+        plt.show()
 
 
 class DataFrameTransform:
