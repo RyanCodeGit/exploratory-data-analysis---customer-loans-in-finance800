@@ -1,7 +1,9 @@
+from scipy import stats
 from statsmodels.graphics.gofplots import qqplot
 from sqlalchemy import create_engine
 import matplotlib.pyplot as plt
 import missingno as msno
+import numpy as np
 import pandas as pd
 import plotly.express as px
 import psycopg2
@@ -157,13 +159,21 @@ class Plotter:
     def multi_hist(self, df, columns=None, num_bins=50, size_inches=(15,20)):
         df.hist(column=columns, bins=num_bins, figsize=size_inches)
     
-    def plot_hist(self, df, column, bins=None):
-        hist = px.histogram(df, x=column, nbins=bins)
-        hist.show()
+    def plot_hist(self, df, column=None, bins=None):
+        if type(df) == pd.core.frame.DataFrame:
+            hist = px.histogram(df, x=column, nbins=bins)
+            hist.show()
+        elif type(df) == pd.core.series.Series:
+            hist = px.histogram(df, x=df, nbins=bins)
+            hist.show()
 
-    def plot_qq(self, df, column):
-        plot = qqplot(df[column], line='q', fit=True)
-        plt.show()
+    def plot_qq(self, df, column=None):
+        if type(df) == pd.core.frame.DataFrame:
+            plot = qqplot(df[column], line='q', fit=True)
+            plt.show()
+        elif type(df) == pd.core.series.Series:
+            plot = qqplot(df, line='q', fit=True)
+            plt.show()
 
 
 class DataFrameTransform:
@@ -182,6 +192,14 @@ class DataFrameTransform:
         column2 to fill NULL values in column1.
         """
         df[column1] = df[column1].fillna(df[column2])
+
+    def log_tf(self, df, column):
+        return np.log(df[column])
+
+    def boxcox_tf(self, df, column):
+        transform = stats.boxcox(df[column])
+        series = pd.Series(transform[0])
+        return series
 
 """ 
 Step 1: You will want to create two classes at this stage:
