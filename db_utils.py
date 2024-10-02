@@ -135,6 +135,9 @@ class DataFrameInfo:
         print(f"Smallest value in {column}: {df[column].min()}")
         print(f"Largest value in {column}: {df[column].max()}")
 
+    def contains_zero(self, df, column):
+        return (df[column] == 0).any()
+        
     def value_count(self, df, column):
         print(f"Number of distinct values in {column}: {df[column].count()}")
         print(f"Frequency of each unique value in {df[column].value_counts(dropna=False)}")
@@ -198,6 +201,11 @@ class DataFrameTransform:
 
     def boxcox_tf(self, df, column):
         transform = stats.boxcox(df[column])
+        series = pd.Series(transform[0])
+        return series
+
+    def yeojohn_tf(self, df, column):
+        transform = stats.yeojohnson(df[column])
         series = pd.Series(transform[0])
         return series
 
