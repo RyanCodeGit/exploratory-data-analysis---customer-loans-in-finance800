@@ -161,6 +161,10 @@ class Plotter:
 
     def multi_hist(self, df, columns=None, num_bins=50, size_inches=(15,20)):
         df.hist(column=columns, bins=num_bins, figsize=size_inches)
+
+    def plot_box(self, df, column, points='outliers'):
+        box = px.box(df, y=column, points=points)
+        box.show()
     
     def plot_hist(self, df, column=None, bins=None):
         if type(df) == pd.core.frame.DataFrame:
@@ -180,6 +184,11 @@ class Plotter:
 
 
 class DataFrameTransform:
+    def boxcox_tf(self, df, column):
+        transform = stats.boxcox(df[column])
+        series = pd.Series(transform[0])
+        return series
+    
     def impute_median(self, df, column):
         df[column] = df[column].fillna(df[column].median())
 
@@ -199,10 +208,10 @@ class DataFrameTransform:
     def log_tf(self, df, column):
         return np.log(df[column])
 
-    def boxcox_tf(self, df, column):
-        transform = stats.boxcox(df[column])
-        series = pd.Series(transform[0])
-        return series
+    def remove_outliers(self, df, column, threshold=3):
+        zscore = np.abs(stats.zscore(df[column]))
+        outliers = df[zscore > threshold]
+        df[column] = df[column].drop(outliers.index)
 
     def yeojohn_tf(self, df, column):
         transform = stats.yeojohnson(df[column])
@@ -210,17 +219,12 @@ class DataFrameTransform:
         return series
 
 """ 
-Step 1: You will want to create two classes at this stage:
+Removing outliers from the dataset will improve the quality and accuracy of the analysis as outliers can distort the analysis results. You will need to first identify the outliers and then use a method to remove them.
 
-A Plotter class to visualise insights from the data
-A DataFrameTransformclass to perform EDA transformations on your data
+Step 1: First visualise your data using your Plotter class to determine if the columns contain outliers.
 
-Step 2: Use a method/function to determine the amount of NULLs in each column. Determine which columns should be dropped and drop them.
+Step 2: Once identified use a method to transform or remove the outliers from the dataset. Build this method in your DataFrameTransform class.
 
-Step 3: Within your DataFrameTransform class create a method which can impute your DataFrame columns. Decide whether the column should be imputed with the median or the mean and impute the NULL values.
-
-Step 4: Run your NULL checking method/function again to check that all NULLs have been removed. Generate a plot by creating a method in your Plotter class to visualise the removal of NULL values.
-
-Step 5: At this point you may want to save a separate copy of your DataFrame that you can use during your analysis in Milestone 4.
+Step 3: With the outliers transformed/removed re-visualise your data with you Plotter class to check that the outliers have been correctly removed.
 
 """
