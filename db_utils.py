@@ -125,6 +125,18 @@ class DataTransform:
             df[columns] = pd.to_numeric(df[columns], downcast='signed')
         
 class DataFrameInfo:
+    def calc_data_loss(self, series1, series2):
+        """"
+        This method takes parameters series1 and series2, 
+        counts their values and prints the difference as a percentage.
+
+        Args:
+           series1 (Pandas series): The series with the highest count.
+           series2 (Pandas series): The series with the lowest count.
+        """
+        difference = series1.count() - series2.count()
+        print(f"Amount of data lost: {((difference / series1.count()) * 100).round(2)}%")
+    
     def check_stats(self, df, column):
         print(f"Q1 of {column}: {df[column].quantile(0.25)}")
         print(f"Median of {column}: {df[column].median()}")
