@@ -220,9 +220,28 @@ class DataFrameTransform:
     def log_tf(self, df, column):
         return np.log(df[column])
 
-    def remove_outliers(self, df, column, threshold=3):
+    def remove_outliers_zs(self, df, column, threshold=3):
+        # Determine zscore of column
         zscore = np.abs(stats.zscore(df[column]))
+
+        # Determine outliers
         outliers = df[zscore > threshold]
+
+        # Remove outliers
+        df[column] = df[column].drop(outliers.index)
+
+    def remove_outliers_iqr(self, df, column):
+        # Determine quantiles
+        q1 = df[column].quantile(0.25)
+        q3 = df[column].quantile(0.75)
+        
+        # Calculate IQR
+        iqr = np.abs(stats.iqr(df[column]))
+
+        # Determine outliers
+        outliers = df[(df[column] < q1 - 1.5 * iqr) | (df[column] > q3 + 1.5 * iqr)]
+
+        # drop rows containing outliers
         df[column] = df[column].drop(outliers.index)
 
     def yeojohn_tf(self, df, column):
@@ -231,7 +250,8 @@ class DataFrameTransform:
         return series
 
 """ 
-Removing outliers from the dataset will improve the quality and accuracy of the analysis as outliers can distort the analysis results. You will need to first identify the outliers and then use a method to remove them.
+Removing outliers from the dataset will improve the quality and accuracy of the analysis as outliers can distort the analysis results. 
+You will need to first identify the outliers and then use a method to remove them.
 
 Step 1: First visualise your data using your Plotter class to determine if the columns contain outliers.
 
